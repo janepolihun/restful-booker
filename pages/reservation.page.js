@@ -1,31 +1,24 @@
-import type { Page, Response } from '@playwright/test';
+class ReservationPage {
+  constructor(page) {
+    this.page = page;
+  }
 
-export type GuestFormData = {
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: string;
-};
-
-export class ReservationPage {
-  constructor(private readonly page: Page) {}
-
-  async goto(roomId: number, checkinIso: string, checkoutIso: string): Promise<void> {
+  async goto(roomId, checkinIso, checkoutIso) {
     await this.page.goto(`/reservation/${roomId}?checkin=${checkinIso}&checkout=${checkoutIso}`);
   }
 
-  async openBookingForm(): Promise<void> {
+  async openBookingForm() {
     await this.page.getByRole('button', { name: 'Reserve Now' }).first().click();
   }
 
-  async fillGuestForm(data: GuestFormData): Promise<void> {
+  async fillGuestForm(data) {
     await this.page.getByPlaceholder('Firstname').fill(data.firstname);
     await this.page.getByPlaceholder('Lastname').fill(data.lastname);
     await this.page.getByPlaceholder('Email').fill(data.email);
     await this.page.getByPlaceholder('Phone').fill(data.phone);
   }
 
-  async submitBooking(): Promise<Response> {
+  async submitBooking() {
     const bookingResponse = this.page.waitForResponse(
       (response) => response.request().method() === 'POST' && response.url().includes('/api/booking')
     );
@@ -34,7 +27,7 @@ export class ReservationPage {
     return bookingResponse;
   }
 
-  async clickReserveInGuestForm(): Promise<void> {
+  async clickReserveInGuestForm() {
     await this.page.getByRole('button', { name: 'Reserve Now' }).last().click();
   }
 
@@ -46,3 +39,7 @@ export class ReservationPage {
     return this.page.getByText(/size must be between 11 and 21/i);
   }
 }
+
+module.exports = {
+  ReservationPage
+};

@@ -1,7 +1,6 @@
-import type { BookingPayload } from '../api/models/restful-booker.model';
-import { addDays, toIsoDate } from '../helpers/date-helper';
+const { addDays, toIsoDate } = require('../helpers/date-helper');
 
-export function buildBookingPayload(seed: string): BookingPayload {
+function buildBookingPayload(seed) {
   const checkin = addDays(new Date(), 30);
   const checkout = addDays(checkin, 2);
 
@@ -17,3 +16,5 @@ export function buildBookingPayload(seed: string): BookingPayload {
     additionalneeds: 'Breakfast'
   };
 }
+
+module.exports = { buildBookingPayload };

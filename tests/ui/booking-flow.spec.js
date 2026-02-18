@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/test.fixture';
+const { test, expect } = require('../../fixtures/test.fixture');
 
 test.describe('UI Booking Flow', () => {
   test('guest can choose room, choose dates, submit booking, and see confirmation', async ({

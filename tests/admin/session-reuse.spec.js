@@ -1,5 +1,5 @@
-import { test, expect } from '../../fixtures/test.fixture';
-import { env } from '../../config/env';
+const { test, expect } = require('../../fixtures/test.fixture');
+const { env } = require('../../config/env');
 
 test.describe('Admin Session Reuse (Bonus)', () => {
   test('reuses API token as browser cookie to access admin rooms without UI login', async ({
@@ -11,7 +11,7 @@ test.describe('Admin Session Reuse (Bonus)', () => {
     const authResult = await automationApi.createAdminToken(env.adminUsername, env.adminPassword);
 
     test.skip(authResult.status !== 200 || !authResult.token, 'Admin API credentials are not valid in this environment');
-    const token = authResult.token as string;
+    const token = authResult.token;
 
     await context.addCookies([
       {

@@ -1,5 +1,5 @@
-import { test, expect } from '../../fixtures/test.fixture';
-import { buildBookingPayload } from '../../data/booking.factory';
+const { test, expect } = require('../../fixtures/test.fixture');
+const { buildBookingPayload } = require('../../data/booking.factory');
 
 test.describe('API Booking - Create and Get', () => {
   test('creates booking and fetches it by id', async ({ restfulBookerApi }, testInfo) => {

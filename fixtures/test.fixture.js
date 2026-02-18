@@ -1,23 +1,13 @@
-import { test as base } from '@playwright/test';
-import { AutomationPlatformClient, type AvailableRoomWindow } from '../api/client/automation-platform.client';
-import { RestfulBookerClient } from '../api/client/restful-booker.client';
-import { env } from '../config/env';
-import { createGuestDetails, deterministicSuffix, type GuestDetails } from '../data/guest.factory';
-import { AdminPage } from '../pages/admin.page';
-import { HomePage } from '../pages/home.page';
-import { ReservationPage } from '../pages/reservation.page';
+const { test: base, expect } = require('@playwright/test');
+const { AutomationPlatformClient } = require('../api/client/automation-platform.client');
+const { RestfulBookerClient } = require('../api/client/restful-booker.client');
+const { env } = require('../config/env');
+const { createGuestDetails, deterministicSuffix } = require('../data/guest.factory');
+const { AdminPage } = require('../pages/admin.page');
+const { HomePage } = require('../pages/home.page');
+const { ReservationPage } = require('../pages/reservation.page');
 
-type FrameworkFixtures = {
-  homePage: HomePage;
-  reservationPage: ReservationPage;
-  adminPage: AdminPage;
-  automationApi: AutomationPlatformClient;
-  restfulBookerApi: RestfulBookerClient;
-  availableRoomWindow: AvailableRoomWindow;
-  guest: GuestDetails;
-};
-
-export const test = base.extend<FrameworkFixtures>({
+const test = base.extend({
   homePage: async ({ page }, use) => {
     await use(new HomePage(page));
   },
@@ -71,4 +61,7 @@ export const test = base.extend<FrameworkFixtures>({
   }
 });
 
-export { expect } from '@playwright/test';
+module.exports = {
+  test,
+  expect
+};

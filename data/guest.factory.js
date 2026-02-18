@@ -1,13 +1,4 @@
-import type { TestInfo } from '@playwright/test';
-
-export type GuestDetails = {
-  firstname: string;
-  lastname: string;
-  email: string;
-  phone: string;
-};
-
-export function createGuestDetails(suffix: string): GuestDetails {
+function createGuestDetails(suffix) {
   return {
     firstname: 'Jane',
     lastname: 'Doe',
@@ -16,7 +7,12 @@ export function createGuestDetails(suffix: string): GuestDetails {
   };
 }
 
-export function deterministicSuffix(testInfo: TestInfo): string {
+function deterministicSuffix(testInfo) {
   const titleSlug = testInfo.title.replace(/[^a-zA-Z0-9]+/g, '-').slice(0, 24);
   return `${testInfo.parallelIndex}-${titleSlug}-${Date.now().toString().slice(-6)}`;
 }
+
+module.exports = {
+  createGuestDetails,
+  deterministicSuffix
+};

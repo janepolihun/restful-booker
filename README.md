@@ -1,4 +1,4 @@
-# Playwright QA/SDET Framework (TypeScript)
+# Playwright QA/SDET Framework (JavaScript)
 
 Production-style UI + API test framework for the QA/SDET assignment.
 
@@ -15,7 +15,7 @@ Target systems:
   - verify confirmation state in UI
 - Extra UI risk scenario:
   - phone validation prevents successful booking confirmation
-- API automation (>=2 operations):
+- API automation:
   - `create + get`
   - `update + delete`
 - Bonus:
@@ -26,41 +26,37 @@ Target systems:
 ```text
 .
 ├── api
-│   ├── client
-│   │   ├── automation-platform.client.ts
-│   │   └── restful-booker.client.ts
-│   └── models
-│       ├── automation-platform.model.ts
-│       └── restful-booker.model.ts
+│   └── client
+│       ├── automation-platform.client.js
+│       └── restful-booker.client.js
 ├── config
-│   └── env.ts
+│   └── env.js
 ├── data
-│   ├── booking.factory.ts
-│   └── guest.factory.ts
+│   ├── booking.factory.js
+│   └── guest.factory.js
 ├── fixtures
-│   └── test.fixture.ts
+│   └── test.fixture.js
 ├── helpers
-│   └── date-helper.ts
+│   └── date-helper.js
 ├── pages
-│   ├── admin.page.ts
-│   ├── home.page.ts
-│   └── reservation.page.ts
+│   ├── admin.page.js
+│   ├── home.page.js
+│   └── reservation.page.js
 ├── tests
 │   ├── admin
-│   │   └── session-reuse.spec.ts
+│   │   └── session-reuse.spec.js
 │   ├── api
-│   │   ├── booking-create-get.spec.ts
-│   │   └── booking-update-delete.spec.ts
+│   │   ├── booking-create-get.spec.js
+│   │   └── booking-update-delete.spec.js
 │   └── ui
-│       ├── booking-flow.spec.ts
-│       └── booking-validation.spec.ts
-├── playwright.config.ts
-└── tsconfig.json
+│       ├── booking-flow.spec.js
+│       └── booking-validation.spec.js
+└── playwright.config.js
 ```
 
 ## Design Decisions
 - Business-readable tests, interaction logic in Page Objects, assertions in specs.
-- Typed API clients as a stable contract boundary for request/response handling.
+- Reusable API clients as a contract boundary for request/response handling.
 - Deterministic date strategy:
   - room availability discovered via `/api/report/room/:id`
   - first free 2-night window selected dynamically
@@ -77,19 +73,10 @@ npx playwright install chromium
 ## Run Tests
 
 ```bash
-# all Playwright tests
 npm test
-
-# UI only
 npm run test:ui
-
-# API only
 npm run test:api
-
-# bonus admin scenario
 npm run test:admin
-
-# legacy mocha suite (from original repo)
 npm run test:legacy
 ```
 
@@ -100,58 +87,9 @@ npm run test:legacy
 - `ADMIN_PASSWORD` (default: `password`)
 
 ## CI
-Example GitHub Actions workflow: `.github/workflows/playwright.yml`
-
-Pipeline steps:
-1. install deps
-2. install Playwright browser
-3. run API tests
-4. run UI tests
-5. run bonus admin test
-6. upload Playwright HTML report
+Example workflow: `.github/workflows/playwright.yml`
 
 ## Known Constraints
 - External demo environments can change data/content without notice.
 - UI availability is stateful; framework mitigates this by querying room availability before booking.
 - Bonus admin test depends on valid admin creds for the target environment.
-
-## Interview Walkthrough
-### 1) Architecture
-- `pages/` encapsulate UI interactions only.
-- `api/client/` encapsulate all HTTP behavior and auth mechanics.
-- `fixtures/` inject ready-to-use abstractions to keep specs small and expressive.
-- `data/` factories create deterministic test inputs with safe uniqueness.
-
-### 2) Key Decisions
-- Kept architecture intentionally lightweight: only abstractions that reduce duplication in 3-day window.
-- Used role/text/href-based selectors with explicit waits and response synchronization.
-- Used API-backed availability discovery to remove date-related flakes from booking flow.
-
-### 3) Flaky Reduction
-- deterministic booking window selection via API
-- assertions on explicit, user-visible states (`Booking Confirmed`, validation error)
-- network synchronization for critical mutation (`POST /api/booking`)
-- retry/trace/video/screenshot configured in Playwright
-
-### 4) Timebox Tradeoffs
-- prioritized reliability and maintainability over broad scenario count
-- implemented one high-value full E2E + one validation risk scenario
-- bonus admin scenario delivered, but treated as environment-dependent
-
-### 5) How to Scale
-- add domain-specific API clients per bounded context
-- add tags/projects for smoke/regression/parallel shards
-- move shared assertions into assertion helpers when duplication appears
-- add contract/schema validation on API responses
-
-### 6) Likely Interview Questions (short strong answers)
-1. Why Page Objects and not Screenplay?
-   - For this scope, Page Objects provide enough structure with lower overhead and faster onboarding.
-2. How did you handle unstable test data?
-   - Deterministic availability lookup via API + unique guest identities per test.
-3. Why keep assertions in tests?
-   - Keeps intent visible to reviewers and avoids “hidden assertions” anti-pattern in page methods.
-4. How would you speed up CI at scale?
-   - Split API/UI projects, shard by file, run smoke on PR and full regression nightly.
-5. What would be your next improvement?
-   - Add observability hooks (request/response logs on failure) and richer reporting with trace links.

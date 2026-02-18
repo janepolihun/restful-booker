@@ -1,7 +1,7 @@
-import { defineConfig } from '@playwright/test';
-import { env } from './config/env';
+const { defineConfig } = require('@playwright/test');
+const { env } = require('./config/env');
 
-export default defineConfig({
+module.exports = defineConfig({
   testDir: './tests',
   fullyParallel: true,
   timeout: 45_000,

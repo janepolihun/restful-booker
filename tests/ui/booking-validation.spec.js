@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/test.fixture';
+const { test, expect } = require('../../fixtures/test.fixture');
 
 test.describe('UI Booking Validation', () => {
   test('shows validation error for too short phone number and blocks successful booking', async ({
