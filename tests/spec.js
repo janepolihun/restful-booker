@@ -29,7 +29,16 @@ const payload  = generatePayload('Sally', 'Brown', 111, true, 'Breakfast', '2013
     payload2 = generatePayload('Geoff', 'White', 111, true, 'Breakfast', '2013-02-02', '2013-02-05'),
     payload3 = generatePayload('Bob', 'Brown', 111, true, 'Breakfast', '2013-02-03', '2013-02-06');
 
-const server = require('../app');
+const app = require('../app');
+let server;
+
+before(function(done) {
+  server = app.listen(0, done);
+});
+
+after(function(done) {
+  server.close(done);
+});
 
 describe('restful-booker', function () {
 

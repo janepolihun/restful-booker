@@ -1,3 +1,20 @@
+const util = require('util');
+
+// NeDB depends on deprecated util helpers removed in modern Node versions.
+if (typeof util.isArray !== 'function') {
+  util.isArray = Array.isArray;
+}
+if (typeof util.isDate !== 'function') {
+  util.isDate = function(value) {
+    return value instanceof Date;
+  };
+}
+if (typeof util.isRegExp !== 'function') {
+  util.isRegExp = function(value) {
+    return value instanceof RegExp;
+  };
+}
+
 const Datastore = require('nedb');
 let counter = 0;
 

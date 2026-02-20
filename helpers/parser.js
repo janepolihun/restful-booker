@@ -1,6 +1,15 @@
 const js2xmlparser = require("js2xmlparser"),
-    formurlencoded = require('form-urlencoded').default,
-    date = require('date-and-time');
+    formurlencoded = require('form-urlencoded').default;
+
+function normalizeDate(value) {
+  if (typeof value === 'string') {
+    return value.slice(0, 10);
+  }
+  if (value instanceof Date) {
+    return value.toISOString().slice(0, 10);
+  }
+  return value;
+}
 
 exports.bookingids = function(req, rawBooking){
   const payload = [];
@@ -24,8 +33,8 @@ exports.booking = function(accept, rawBooking){
       'totalprice': parseInt(rawBooking.totalprice),
       'depositpaid': Boolean(rawBooking.depositpaid),
       'bookingdates': {
-        'checkin': date.format(new Date(rawBooking.bookingdates.checkin), 'YYYY-MM-DD'),
-        'checkout': date.format(new Date(rawBooking.bookingdates.checkout), 'YYYY-MM-DD'),
+        'checkin': normalizeDate(rawBooking.bookingdates.checkin),
+        'checkout': normalizeDate(rawBooking.bookingdates.checkout),
       }
     };
 
@@ -33,7 +42,7 @@ exports.booking = function(accept, rawBooking){
       booking.additionalneeds = rawBooking.additionalneeds;
     }
 
-    switch(accept){
+    switch(accept || 'application/json'){
       case 'application/xml':
         return js2xmlparser.parse('booking', booking);
       case 'application/json':
@@ -58,8 +67,8 @@ exports.bookingWithId = function(req, rawBooking){
       'totalprice': parseInt(rawBooking.totalprice),
       'depositpaid': Boolean(rawBooking.depositpaid),
       'bookingdates': {
-        'checkin': date.format(new Date(rawBooking.bookingdates.checkin), 'YYYY-MM-DD'),
-        'checkout': date.format(new Date(rawBooking.bookingdates.checkout), 'YYYY-MM-DD'),
+        'checkin': normalizeDate(rawBooking.bookingdates.checkin),
+        'checkout': normalizeDate(rawBooking.bookingdates.checkout),
       }
     };
 
@@ -72,7 +81,7 @@ exports.bookingWithId = function(req, rawBooking){
       "booking": booking
     };
 
-    switch(req.headers.accept){
+    switch(req.headers.accept || 'application/json'){
       case 'application/xml':
         return js2xmlparser.parse('created-booking', payload);
       case 'application/json':

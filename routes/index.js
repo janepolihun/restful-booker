@@ -99,11 +99,15 @@ router.get('/booking', function(req, res, next) {
   }
 
   if(typeof(req.query.checkin) != 'undefined'){
-    query["bookingdates.checkin"] = {$gt: new Date(req.query.checkin).toISOString()}
+    // Validate date format but keep YYYY-MM-DD string comparison semantics.
+    new Date(req.query.checkin).toISOString();
+    query["bookingdates.checkin"] = {$gt: req.query.checkin}
   }
 
   if(typeof(req.query.checkout) != 'undefined'){
-    query["bookingdates.checkout"] = {$lt: new Date(req.query.checkout).toISOString()}
+    // Validate date format but keep YYYY-MM-DD string comparison semantics.
+    new Date(req.query.checkout).toISOString();
+    query["bookingdates.checkout"] = {$lt: req.query.checkout}
   }
 
   Booking.getIDs(query, function(err, record){
