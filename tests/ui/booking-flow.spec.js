@@ -19,11 +19,7 @@ test.describe('UI Booking Flow', () => {
     expect(bookingResponse.status()).toBe(201);
 
     await expect(reservationPage.bookingConfirmedBanner()).toBeVisible();
-    await expect(
-      reservationPage.bookingConfirmedBanner().locator('..').getByText(availableRoomWindow.checkinIso)
-    ).toBeVisible();
-    await expect(
-      reservationPage.bookingConfirmedBanner().locator('..').getByText(availableRoomWindow.checkoutIso)
-    ).toBeVisible();
+    await expect(reservationPage.bookingConfirmationDate(availableRoomWindow.checkinIso)).toBeVisible();
+    await expect(reservationPage.bookingConfirmationDate(availableRoomWindow.checkoutIso)).toBeVisible();
   });
 });

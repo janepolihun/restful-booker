@@ -1,8 +1,18 @@
+const HOME_SELECTORS = {
+  availabilityCard: 'div.card:has(button:has-text("Check Availability"))',
+  stayDateInputs: 'input',
+  checkAvailabilityButtonName: 'Check Availability',
+  roomReservationLinkById: (roomId) => `a[href*="/reservation/${roomId}?"]`
+};
+
 class HomePage {
   constructor(page) {
     this.page = page;
-    this.availabilityCard = this.page.locator('div.card').filter({
-      hasText: 'Check Availability & Book Your Stay'
+    this.availabilityCard = this.page.locator(HOME_SELECTORS.availabilityCard);
+    this.checkinInput = this.availabilityCard.locator(HOME_SELECTORS.stayDateInputs).first();
+    this.checkoutInput = this.availabilityCard.locator(HOME_SELECTORS.stayDateInputs).nth(1);
+    this.checkAvailabilityButton = this.availabilityCard.getByRole('button', {
+      name: HOME_SELECTORS.checkAvailabilityButtonName
     });
   }
 
@@ -11,21 +21,16 @@ class HomePage {
   }
 
   async fillStayDates(checkinUi, checkoutUi) {
-    const dateInputs = this.availabilityCard.locator('input[type="text"]');
-    await dateInputs.nth(0).fill(checkinUi);
-    await dateInputs.nth(1).fill(checkoutUi);
+    await this.checkinInput.fill(checkinUi);
+    await this.checkoutInput.fill(checkoutUi);
   }
 
   async checkAvailability() {
-    await this.availabilityCard.getByRole('button', { name: 'Check Availability' }).click();
+    await this.checkAvailabilityButton.click();
   }
 
   async openRoomReservation(roomId) {
-    await this.page
-      .locator(`a[href*="/reservation/${roomId}?"]`)
-      .filter({ hasText: 'Book now' })
-      .first()
-      .click();
+    await this.page.locator(HOME_SELECTORS.roomReservationLinkById(roomId)).first().click();
   }
 }
 
